@@ -1,24 +1,37 @@
-<script>
-	export let name;
+<script lang="ts">
+	import FileSelector from  './FileSelector.svelte'
+
+	export let name: string;
 </script>
 
 <main>
-	<h1>Hello {name}!</h1>
-	<p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
+	<h1>Hello <span class="name">{name}</span>!</h1>
+	<p><span class="name">SAM</span>'s column matching.</p>
+
+	<FileSelector></FileSelector>
+	<FileSelector></FileSelector>
+	<button>MATCH!</button>
 </main>
 
 <style>
 	main {
-		text-align: center;
+		text-align: CENTER;
 		padding: 1em;
 		max-width: 240px;
 		margin: 0 auto;
 	}
 
 	h1 {
-		color: #ff3e00;
+		color: #000000;
 		text-transform: uppercase;
 		font-size: 4em;
+		font-weight: 100;
+	}
+
+	.name {
+		color: #ff3e00;
+		text-transform: uppercase;
+		font-size: 1em;
 		font-weight: 100;
 	}
 
