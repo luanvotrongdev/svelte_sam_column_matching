@@ -1,6 +1,6 @@
 <script lang="ts">
 import { bind } from "svelte/internal";
-    var files : FileList;
+    export var files : FileList = null;
 </script>
 
 <input type="file" id="file_input" bind:files>
