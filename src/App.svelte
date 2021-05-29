@@ -1,29 +1,30 @@
 <script lang="ts">
-	import FileSelector from  './FileSelector.svelte'
+	import FileSelector from "./FileSelector.svelte";
+	import * as XLSXLogic from "./XLSXLogic";
+	
 
 	export let name: string;
-	var inputFile : FileList;
-	var templateFile : FileList;
+	var inputFile: FileList;
+	var templateFile: FileList;
 
-	var textField : HTMLParagraphElement;
+	var textField: HTMLParagraphElement;
 
-	function onMatchBtnPressed()
-	{
-		if(inputFile === null)
-		{
-			textField.innerText = "input file is missing"
-			return 
+	function onMatchBtnPressed() {
+		switch (XLSXLogic.validateInput(inputFile, templateFile)) {
+			case XLSXLogic.ErrorCode.MISSING_INPUT:
+				textField.innerText = "missing input file!";
+				break;
+			case XLSXLogic.ErrorCode.MISSING_TEMPLATE:
+				textField.innerText = "missing template file!";
+				break;
+			case XLSXLogic.ErrorCode.UNKNOWN:
+				textField.innerText = "Unknown error!";
+				break;
+			case XLSXLogic.ErrorCode.NONE:
+				textField.innerText = "";
+				XLSXLogic.matchFiles(inputFile[0], templateFile[0])
+				break;
 		}
-		if(templateFile === null)
-		{
-			textField.innerText = "template file is missing"
-			return 
-		}
-			textField.innerText = ""
-
-		// console.log(inputFile[0].name);
-		// console.log(templateFile[0].name);
-		
 	}
 </script>
 
@@ -31,11 +32,11 @@
 	<h1>Hello <span class="name">{name}</span>!</h1>
 	<p><span class="name">SAM</span>'s column matching.</p>
 
-	<FileSelector bind:files={inputFile}></FileSelector>
-	<FileSelector bind:files={templateFile}></FileSelector>
+	<FileSelector bind:files={inputFile} />
+	<FileSelector bind:files={templateFile} />
 	<button on:click={onMatchBtnPressed}>MATCH!</button>
 
-	<p bind:this={textField}></p>
+	<p bind:this={textField} />
 </main>
 
 <style>
