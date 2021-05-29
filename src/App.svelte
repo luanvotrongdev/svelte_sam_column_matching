@@ -1,7 +1,6 @@
 <script lang="ts">
 	import FileSelector from "./FileSelector.svelte";
 	import * as XLSXLogic from "./XLSXLogic";
-	
 
 	export let name: string;
 	var inputFile: FileList;
@@ -22,7 +21,7 @@
 				break;
 			case XLSXLogic.ErrorCode.NONE:
 				textField.innerText = "";
-				XLSXLogic.matchFiles(inputFile[0], templateFile[0])
+				XLSXLogic.matchFiles(inputFile[0], templateFile[0]);
 				break;
 		}
 	}

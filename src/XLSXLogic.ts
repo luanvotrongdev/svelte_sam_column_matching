@@ -35,7 +35,65 @@ export function matchFiles(inputFile : File, templateFile : File) : Promise<void
 
 function matchXLSXs(input : XLSX.WorkBook, template : XLSX.WorkBook)
 {
-    XLSX.writeFile(input, "output.xlsx");
+    let templateSheet = template.Sheets[template.SheetNames[0]];
+    let inputSheet = input.Sheets[input.SheetNames[0]];
+
+    let templateRange : XLSX.Range = XLSX.utils.decode_range(templateSheet['!ref']);
+
+    var maxRow = 1;
+    var sourceCellAddress : XLSX.CellAddress = null;
+    var destCellAddress : XLSX.CellAddress = null;
+    for(var c=0;c<templateRange.e.c;c++)
+    {
+        destCellAddress = {c: c, r: 0};
+        sourceCellAddress = findColumnID(templateSheet[XLSX.utils.encode_cell(destCellAddress)], inputSheet);
+        if(sourceCellAddress)
+            maxRow = Math.max(maxRow, copyColumn(sourceCellAddress.c, destCellAddress.c, inputSheet, templateSheet));
+    }
+
+    var range = XLSX.utils.decode_range(templateSheet['!ref']);
+    range.e.r = maxRow;
+    templateSheet['!ref'] = XLSX.utils.encode_range(range);
+    XLSX.writeFile(template, "output.xlsx");
+}
+
+function findColumnID(sourceCell : XLSX.CellObject, input : XLSX.WorkSheet) : XLSX.CellAddress
+{
+    if(!sourceCell)
+        return null;
+
+    let inputRange : XLSX.Range = XLSX.utils.decode_range(input['!ref']);
+    var destCellAddress : string;
+    for(var c=0;c<inputRange.e.c;c++)
+    {
+        destCellAddress = XLSX.utils.encode_cell({c:c, r:0});
+        if(input[destCellAddress].w == sourceCell.w)
+        {
+            console.log(input[destCellAddress].w + "  " + sourceCell.w);
+            return {c:c, r:0};
+        }
+    }
+    return null;
+}
+
+function copyColumn(sourceColumn : number, destColumn : number, input: XLSX.WorkSheet, template:XLSX.WorkSheet) : number
+{
+    var maxRow = 1;
+    let inputRange : XLSX.Range = XLSX.utils.decode_range(input['!ref']);
+
+    var dataCell : XLSX.CellObject = null;
+    for(var r=1;r <inputRange.e.r;r++)
+    {
+        dataCell = input[XLSX.utils.encode_cell({c:sourceColumn, r: r})]
+        if(dataCell)
+        {
+            console.log(dataCell.w);
+            template[XLSX.utils.encode_cell({c:destColumn, r: r})] = dataCell;
+            maxRow = r;
+        }
+    }
+
+    return maxRow;
 }
 
 function readXLSXFile(file : File) : Promise<XLSX.WorkBook>
@@ -49,14 +107,3 @@ function readXLSXFile(file : File) : Promise<XLSX.WorkBook>
         reader.readAsArrayBuffer(file);
     })
 }
-
-// function parseXLSX(workbook : XLSX.WorkBook)
-// {
-//     // for(var R = range.s.r; R <= range.e.r; ++R) {
-//     // 	for(var C = range.s.c; C <= range.e.c; ++C) {
-//     // 		var cell_address = {c:C, r:R};
-//     // 		/* if an A1-style address is needed, encode the address */
-//     // 		var cell_ref = XLSX.utils.encode_cell(cell_address);
-//     // 	}
-//     // }
-// }
