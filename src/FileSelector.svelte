@@ -2,7 +2,7 @@
     export var files : FileList = null;
 </script>
 
-<input type="file" id="file_input" bind:files>
+<input type="file" id="file_input" accept=".xlsx,.xls" bind:files>
 
 
 <!-- <button on:click={document.getElementById('file-input').click}>Open</button>
