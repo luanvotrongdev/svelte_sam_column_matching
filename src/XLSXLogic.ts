@@ -57,10 +57,14 @@ function findColumnID(sourceCell: XLSX.CellObject, input: XLSX.WorkSheet): XLSX.
 
     let inputRange: XLSX.Range = XLSX.utils.decode_range(input['!ref']);
     var destCellAddress: string;
+    var destCell : XLSX.CellObject = null;
     for (var c = 0; c <= inputRange.e.c; c++) {
         destCellAddress = XLSX.utils.encode_cell({ c: c, r: 0 });
-        console.log("findColumnID: " + JSON.stringify(input[destCellAddress]) + "  " + JSON.stringify(sourceCell));
-        if (input[destCellAddress] && input[destCellAddress].w == sourceCell.w) {
+        destCell = input[destCellAddress];
+        console.log("findColumnID: " + JSON.stringify(destCell) + "  " + JSON.stringify(sourceCell));
+        if(!destCell)
+            continue;
+        if (destCell.w.toLocaleLowerCase() == sourceCell.w.toLocaleLowerCase()) {
             console.log("findColumnID: match");
             return { c: c, r: 0 };
         }
