@@ -1,5 +1,6 @@
 <script lang="ts">
 	import FileSelector from "./FileSelector.svelte";
+	import Version from "./Version.svelte";
 	import * as XLSXLogic from "./XLSXLogic";
 
 	export let name: string;
@@ -28,6 +29,13 @@
 	}
 </script>
 
+
+<svelte:head>
+	<title>sam's column matching</title>
+	<meta name="robots" content="noindex nofollow" />
+	<html lang="en" />
+</svelte:head>
+
 <main>
 	<h1>Hello <span class="name">{name}</span>!</h1>
 	<p><span class="name">SAM</span>'s column matching.</p>
@@ -37,7 +45,9 @@
 	<button on:click={onMatchBtnPressed}>MATCH!</button>
 
 	<p bind:this={textField} />
+	<Version version="v1.0.0"></Version>
 </main>
+
 
 <style>
 	main {
