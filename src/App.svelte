@@ -5,7 +5,6 @@
 	export let name: string;
 	var inputFile: FileList;
 	var templateFile: FileList;
-
 	var textField: HTMLParagraphElement;
 
 	function onMatchBtnPressed() {
@@ -21,7 +20,9 @@
 				break;
 			case XLSXLogic.ErrorCode.NONE:
 				textField.innerText = "";
-				XLSXLogic.matchFiles(inputFile[0], templateFile[0]);
+				let filename = prompt("Output file name?", "output");
+				if(filename)
+					XLSXLogic.matchFiles(inputFile[0], templateFile[0], filename);
 				break;
 		}
 	}

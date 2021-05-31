@@ -17,18 +17,18 @@ export function validateInput(inputFile: FileList, templateFile: FileList): Erro
     return ErrorCode.NONE;
 }
 
-export function matchFiles(inputFile: File, templateFile: File): Promise<void> {
+export function matchFiles(inputFile: File, templateFile: File, outputName : string = "output"): Promise<void> {
     return new Promise((resolve, _reject) => {
         Promise.all([
             readXLSXFile(inputFile),
             readXLSXFile(templateFile)]
         ).then(values => {
-            resolve(matchXLSXs(values[0], values[1]));
+            resolve(matchXLSXs(values[0], values[1], outputName));
         });
     });
 }
 
-function matchXLSXs(input: XLSX.WorkBook, template: XLSX.WorkBook) {
+function matchXLSXs(input: XLSX.WorkBook, template: XLSX.WorkBook, outputName : string = "output") {
     let templateSheet = template.Sheets[template.SheetNames[0]];
     let inputSheet = input.Sheets[input.SheetNames[0]];
 
@@ -48,7 +48,7 @@ function matchXLSXs(input: XLSX.WorkBook, template: XLSX.WorkBook) {
     var range = XLSX.utils.decode_range(templateSheet['!ref']);
     range.e.r = maxRow;
     templateSheet['!ref'] = XLSX.utils.encode_range(range);
-    XLSX.writeFile(template, "output.xlsx");
+    XLSX.writeFile(template, outputName + ".xlsx");
 }
 
 function findColumnID(sourceCell: XLSX.CellObject, input: XLSX.WorkSheet): XLSX.CellAddress {
